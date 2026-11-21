@@ -8,11 +8,40 @@ import yfinance as yf
 # =========================================================
 # 👇 설정 영역: 여러 종목을 넣고 실행 옵션을 고르세요
 # =========================================================
-STOCK_LIST = ["NVIDIA", "SK하이닉스", "삼성전자", "테슬라", "VOO", "IVV", "QQQ", "알파벳A", "알파벳B", "네이버", "카카오", "SNDK", "apple", "MSFT", "meta", "아마존", "AMD", "현대차", "LG전자"]
+STOCK_LIST = [
+    "NVIDIA", "SK하이닉스", "005930.KS", "테슬라",
+    "VOO", "IVV", "QQQ", "알파벳A", "알파벳B",
+    "네이버", "카카오", "SNDK", "apple", "MSFT",
+    "meta", "아마존", "AMD", "현대차", "LG전자"
+]
 LOG_DIR = "stock_range_logs"
 
 # 평소 매일 돌릴 때는 False, 3개월 백테스트 표를 함께 보려면 True
 RUN_BACKTEST_FIRST = False
+
+
+def get_usd_krw_rate(default_rate: float = 1400.0) -> float:
+    try:
+        fx = yf.download("KRW=X", period="5d", interval="1d", auto_adjust=True, progress=False)
+        if fx is not None and not fx.empty:
+            s = fx["Close"].squeeze().dropna()
+            if len(s) > 0:
+                val = float(s.iloc[-1])
+                if val > 0:
+                    return val
+    except Exception:
+        pass
+    return default_rate
+
+
+def format_krw(amount: float) -> str:
+    if np.isnan(amount) or np.isinf(amount):
+        return "-"
+    if abs(amount) >= 100_000_000:
+        return f"₩{amount / 100_000_000:.2f}억"
+    if abs(amount) >= 10_000:
+        return f"₩{amount:,.0f}"
+    return f"₩{amount:,.1f}"
 
 
 def resolve_ticker(query: str) -> tuple[str, str] | None:
@@ -31,6 +60,7 @@ def resolve_ticker(query: str) -> tuple[str, str] | None:
         "NAVER": "035420.KS",
         "네이버": "035420.KS",
         "카카오": "035720.KS",
+        "LG전자": "066570.KS",
     }
     us_map = {
         "nvidia": "NVDA",
@@ -50,6 +80,8 @@ def resolve_ticker(query: str) -> tuple[str, str] | None:
         "메타": "META",
         "amd": "AMD",
         "palantir": "PLTR",
+        "sandisk": "SNDK",
+        "샌디스크": "SNDK",
     }
 
     if q in kr_map:
@@ -181,9 +213,10 @@ def run_backtest_summary(stock_list: list[str]):
 
 def update_single_stock_log(log_path: str, ticker: str, closes_series: pd.Series) -> tuple[float, pd.DataFrame]:
     cols = [
-        "ticker", "forecast_from_date", "base_close",
+        "ticker", "forecast_from_date", "base_close", "base_close_krw",
         "mean_1d", "std_1d", "used_k",
-        "d1_low_pct", "d1_high_pct", "d1_badge",
+        "d1_low_pct", "d1_high_pct", "d1_low_krw", "d1_high_krw", "d1_badge",
+        "d2_low_krw", "d2_high_krw",
         "actual_1d_date", "actual_1d_close", "actual_1d_pct",
         "in_range_1d", "abs_err_pct"
     ]
@@ -236,22 +269,34 @@ def update_single_stock_log(log_path: str, ticker: str, closes_series: pd.Series
     return adj_k, log_df
 
 
-def process_one_stock_safely(query: str, log_dir: str = LOG_DIR) -> dict:
+def process_one_stock_safely(query: str, usd_krw: float, log_dir: str = LOG_DIR) -> dict:
     try:
         resolved = resolve_ticker(query)
         if not resolved:
-            return {"입력": query, "티커": "-", "상태": "❌ 매핑실패", "기준일": "-", "1일예상": "-", "2일예상": "-", "신호(1일/2일)": "-"}
+            return {
+                "입력": query, "티커": "-", "상태": "❌ 매핑실패", "기준일": "-",
+                "기준가(원)": "-", "1일예상": "-", "1일예상(원)": "-",
+                "2일예상": "-", "2일예상(원)": "-", "신호(1일/2일)": "-"
+            }
 
-        _, ticker = resolved
+        market, ticker = resolved
         log_path = get_stock_log_path(log_dir, ticker)
 
         raw = yf.download(ticker, period="3mo", interval="1d", auto_adjust=True, progress=False)
         if raw is None or raw.empty:
-            return {"입력": query, "티커": ticker, "상태": "❌ 데이터없음", "기준일": "-", "1일예상": "-", "2일예상": "-", "신호(1일/2일)": "-"}
+            return {
+                "입력": query, "티커": ticker, "상태": "❌ 데이터없음", "기준일": "-",
+                "기준가(원)": "-", "1일예상": "-", "1일예상(원)": "-",
+                "2일예상": "-", "2일예상(원)": "-", "신호(1일/2일)": "-"
+            }
 
         closes = raw["Close"].squeeze().dropna()
         if len(closes) < 5:
-            return {"입력": query, "티커": ticker, "상태": "❌ 데이터부족", "기준일": "-", "1일예상": "-", "2일예상": "-", "신호(1일/2일)": "-"}
+            return {
+                "입력": query, "티커": ticker, "상태": "❌ 데이터부족", "기준일": "-",
+                "기준가(원)": "-", "1일예상": "-", "1일예상(원)": "-",
+                "2일예상": "-", "2일예상(원)": "-", "신호(1일/2일)": "-"
+            }
 
         df = pd.DataFrame({"close": closes})
         df["chg_pct"] = df["close"].pct_change() * 100.0
@@ -277,6 +322,13 @@ def process_one_stock_safely(query: str, log_dir: str = LOG_DIR) -> dict:
         d2_low_pct = d2_mean_pct - d2_std_pct
         d2_high_pct = d2_mean_pct + d2_std_pct
 
+        fx_mult = 1.0 if market == "KR" else usd_krw
+        base_krw = latest_px * fx_mult
+        d1_low_krw = base_krw * (1.0 + d1_low_pct / 100.0)
+        d1_high_krw = base_krw * (1.0 + d1_high_pct / 100.0)
+        d2_low_krw = base_krw * (1.0 + d2_low_pct / 100.0)
+        d2_high_krw = base_krw * (1.0 + d2_high_pct / 100.0)
+
         i1 = get_bias_icon(d1_low_pct, d1_high_pct)
         i2 = get_bias_icon(d2_low_pct, d2_high_pct)
 
@@ -287,12 +339,17 @@ def process_one_stock_safely(query: str, log_dir: str = LOG_DIR) -> dict:
             "ticker": ticker,
             "forecast_from_date": last_date,
             "base_close": round(latest_px, 4),
+            "base_close_krw": round(base_krw, 1),
             "mean_1d": round(mean_1d, 4),
             "std_1d": round(std_1d, 4),
             "used_k": round(adj_k, 3),
             "d1_low_pct": round(d1_low_pct, 2),
             "d1_high_pct": round(d1_high_pct, 2),
+            "d1_low_krw": round(d1_low_krw, 1),
+            "d1_high_krw": round(d1_high_krw, 1),
             "d1_badge": f"{i1} {'상승폭' if i1 == '🔴' else '하락폭' if i1 == '🟢' else '동일'}",
+            "d2_low_krw": round(d2_low_krw, 1),
+            "d2_high_krw": round(d2_high_krw, 1),
             "actual_1d_date": np.nan,
             "actual_1d_close": np.nan,
             "actual_1d_pct": np.nan,
@@ -307,19 +364,18 @@ def process_one_stock_safely(query: str, log_dir: str = LOG_DIR) -> dict:
             "티커": ticker,
             "상태": "✅ 완료",
             "기준일": last_date,
+            "기준가(원)": format_krw(base_krw),
             "1일예상": f"{d1_low_pct:+.1f}%~{d1_high_pct:+.1f}%",
+            "1일예상(원)": f"{format_krw(d1_low_krw)}~{format_krw(d1_high_krw)}",
             "2일예상": f"{d2_low_pct:+.1f}%~{d2_high_pct:+.1f}%",
+            "2일예상(원)": f"{format_krw(d2_low_krw)}~{format_krw(d2_high_krw)}",
             "신호(1일/2일)": f"{i1} / {i2}",
         }
     except Exception as e:
         return {
-            "입력": query,
-            "티커": "-",
-            "상태": f"⚠️ 에러({type(e).__name__})",
-            "기준일": "-",
-            "1일예상": "-",
-            "2일예상": "-",
-            "신호(1일/2일)": "-",
+            "입력": query, "티커": "-", "상태": f"⚠️ 에러({type(e).__name__})", "기준일": "-",
+            "기준가(원)": "-", "1일예상": "-", "1일예상(원)": "-",
+            "2일예상": "-", "2일예상(원)": "-", "신호(1일/2일)": "-"
         }
 
 
@@ -351,6 +407,9 @@ def print_cumulative_summary(log_dir: str = LOG_DIR):
                 hit_str = "-"
                 err_str = "-"
             k_val = float(df["used_k"].dropna().iloc[-1]) if "used_k" in df.columns and not df["used_k"].dropna().empty else 1.0
+            base_krw_str = "-"
+            if "base_close_krw" in df.columns and not df["base_close_krw"].dropna().empty:
+                base_krw_str = format_krw(float(df["base_close_krw"].dropna().iloc[-1]))
             rows.append({
                 "종목": ticker,
                 "기록수": len(df),
@@ -358,6 +417,7 @@ def print_cumulative_summary(log_dir: str = LOG_DIR):
                 "누적적중률": hit_str,
                 "평균오차": err_str,
                 "배수(k)": f"{k_val:.2f}x",
+                "최근기준가(원)": base_krw_str,
             })
         except Exception as e:
             rows.append({
@@ -367,6 +427,7 @@ def print_cumulative_summary(log_dir: str = LOG_DIR):
                 "누적적중률": f"읽기에러({type(e).__name__})",
                 "평균오차": "-",
                 "배수(k)": "-",
+                "최근기준가(원)": "-",
             })
 
     if rows:
@@ -377,7 +438,10 @@ def print_cumulative_summary(log_dir: str = LOG_DIR):
 if RUN_BACKTEST_FIRST:
     run_backtest_summary(STOCK_LIST)
 
-run_rows = [process_one_stock_safely(item, LOG_DIR) for item in STOCK_LIST]
+usd_krw_rate = get_usd_krw_rate()
+print(f"💱 적용 환율 (USD/KRW): {usd_krw_rate:,.2f}원")
+
+run_rows = [process_one_stock_safely(item, usd_krw_rate, LOG_DIR) for item in STOCK_LIST]
 print("=" * 78)
 print("📌 오늘 배치 실행 요약")
 print("=" * 78)

@@ -1,0 +1,2 @@
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
+LGHL,2026-11-20,0.71,-5.2951,12.2343,1.0,-17.53,6.94,🟢 하락폭,,,,,

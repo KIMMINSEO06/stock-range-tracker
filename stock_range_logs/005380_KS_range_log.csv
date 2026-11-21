@@ -1,0 +1,2 @@
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
+005380.KS,2026-11-20,255000.0,-0.7027,2.5707,1.0,-3.27,1.87,🟢 하락폭,,,,,

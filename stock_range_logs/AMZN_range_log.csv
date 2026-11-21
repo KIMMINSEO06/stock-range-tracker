@@ -1,0 +1,2 @@
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
+AMZN,2026-11-20,246.82,0.0126,2.7748,1.0,-2.76,2.79,🔴 상승폭,,,,,

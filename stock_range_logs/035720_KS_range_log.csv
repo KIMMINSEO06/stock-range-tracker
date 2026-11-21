@@ -1,2 +1,2 @@
-ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
-035720.KS,2026-11-20,31000.0,0.2082,2.8101,1.0,-2.6,3.02,🔴 상승폭,,,,,
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
+035720.KS,2026-11-20,31000.0,0.2082,2.8101,1.0,-2.6,3.02,🔴 상승폭,,,,,,31000.0,30193.4,31935.7,29897.2,32361.1

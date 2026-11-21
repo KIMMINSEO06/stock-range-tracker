@@ -1,2 +1,2 @@
-ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
-AMD,2026-11-20,424.39,-0.648,8.2388,1.0,-8.89,7.59,🟢 하락폭,,,,,
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
+AMD,2026-11-20,424.39,-0.648,8.2388,1.0,-8.89,7.59,🟢 하락폭,,,,,,566471.6,516130.4,609470.8,493128.0,625131.3

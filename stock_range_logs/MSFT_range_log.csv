@@ -1,2 +1,2 @@
-ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
-MSFT,2026-11-20,484.52,-0.3587,2.4197,1.0,-2.78,2.06,🟢 하락폭,,,,,
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
+MSFT,2026-11-20,484.52,-0.3587,2.4197,1.0,-2.78,2.06,🟢 하락폭,,,,,,646732.5,628763.2,660061.5,619961.0,664223.5

@@ -1,2 +1,2 @@
-ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
-SNDK,2026-11-19,94.395,-2.214,7.9495,1.0,-10.16,5.74,🟢 하락폭,,,,,
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
+SNDK,2026-11-19,94.395,-2.214,7.9495,1.0,-10.16,5.74,🟢 하락폭,,,,,,125997.5,113191.7,133224.1,106253.3,134583.3

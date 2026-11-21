@@ -219,10 +219,19 @@ def update_single_stock_log(log_path: str, ticker: str, closes_series: pd.Series
 
     verified = log_df[log_df["actual_1d_pct"].notna()] if not log_df.empty else pd.DataFrame()
     adj_k = 1.0
-    if len(verified) >= 5:
+    if len(verified) >= 10:
         hit_rate = float(verified["in_range_1d"].astype(bool).mean())
         diff_hit = 0.682 - hit_rate
-        adj_k = float(np.clip(1.0 + diff_hit * 0.6, 0.75, 1.50))
+
+        mean_err = float(verified["abs_err_pct"].mean()) if "abs_err_pct" in verified.columns else np.nan
+        mean_std = float(verified["std_1d"].mean()) if "std_1d" in verified.columns else np.nan
+
+        err_adjust = 0.0
+        if not np.isnan(mean_err) and not np.isnan(mean_std) and mean_std > 0:
+            err_ratio = mean_err / mean_std
+            err_adjust = float(np.clip((err_ratio - 0.85) * 0.25, -0.15, 0.15))
+
+        adj_k = float(np.clip(1.0 + diff_hit * 0.5 + err_adjust, 0.75, 1.50))
 
     return adj_k, log_df
 

@@ -1,0 +1,2 @@
+ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct
+NVDA,2026-11-20,125.53,-2.476,4.1425,1.0,-6.62,1.67,🟢 하락폭,,,,,

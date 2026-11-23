@@ -1,2 +1,2 @@
 ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
-QQQ,2026-11-20,608.45,-0.699,2.5074,1.0,-3.21,1.81,🟢 하락폭,,,,,,812153.0,786111.7,826840.0,771999.5,829598.0
+QQQ,2026-11-20,608.45,-0.699,2.5074,1.0,-3.21,1.81,🟢 하락폭,,,,,,815858.5,789698.3,830612.5,775521.7,833383.0

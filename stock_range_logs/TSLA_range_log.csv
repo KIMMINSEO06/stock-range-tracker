@@ -1,2 +1,2 @@
 ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
-TSLA,2026-11-20,345.82,-0.2878,4.0326,1.0,-4.32,3.74,🟢 하락폭,,,,,,461597.1,441654.5,478883.1,432615.9,485265.0
+TSLA,2026-11-20,345.82,-0.2878,4.0326,1.0,-4.32,3.74,🟢 하락폭,,,,,,463703.1,443669.6,481068.0,434589.8,487479.1

@@ -1,2 +1,2 @@
 ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
-VOO,2026-11-20,635.54,-0.4591,1.6226,1.0,-2.08,1.16,🟢 하락폭,,,,,,852182.8,834443.1,862097.9,824803.2,863913.1
+VOO,2026-11-20,635.54,-0.4591,1.6226,1.0,-2.08,1.16,🟢 하락폭,,,,,,852290.9,834548.9,862207.2,824907.8,864022.6

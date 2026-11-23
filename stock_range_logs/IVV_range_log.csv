@@ -1,2 +1,2 @@
 ticker,forecast_from_date,base_close,mean_1d,std_1d,used_k,d1_low_pct,d1_high_pct,d1_badge,actual_1d_date,actual_1d_close,actual_1d_pct,in_range_1d,abs_err_pct,base_close_krw,d1_low_krw,d1_high_krw,d2_low_krw,d2_high_krw
-IVV,2026-11-20,693.71,-0.4636,1.6401,1.0,-2.1,1.18,🟢 하락폭,,,,,,930181.9,910614.2,941125.3,899983.0,943132.2
+IVV,2026-11-20,693.71,-0.4636,1.6401,1.0,-2.1,1.18,🟢 하락폭,,,,,,930299.9,910729.7,941244.7,900097.1,943251.8
